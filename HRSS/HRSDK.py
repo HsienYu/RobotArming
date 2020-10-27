@@ -1,8 +1,8 @@
 import os
 import enum
 import socket
-import zugbruecke as ctypes
-#from ctypes import *
+#import zugbruecke as ctypes
+from ctypes import *
 from HRSS.Log.Log import Log,Level
 CURRENT_FILE_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
 HRSDK_DLL_PATH = os.path.join(CURRENT_FILE_DIRECTORY, "HRSDK.dll")
@@ -93,8 +93,8 @@ class InstanceRobot:
         #self.robot_callback_log = Log(title="--Robot log--", path="Robot_" + name+"_Callback")
         assert os.path.exists(HRSDK_DLL_PATH), \
             "HRSDK not found. Given path: {path}".format(path=HRSDK_DLL_PATH)
-        #self.HRSDKLib = cdll.LoadLibrary(HRSDK_DLL_PATH)
-        self.HRSDKLib = ctypes.windll.LoadLibrary(HRSDK_DLL_PATH).simple_demo_routine
+        self.HRSDKLib = cdll.LoadLibrary(HRSDK_DLL_PATH)
+        #self.HRSDKLib = ctypes.windll.LoadLibrary(HRSDK_DLL_PATH).simple_demo_routine
         callback_type = CFUNCTYPE(None, c_uint16, c_uint16, POINTER(c_uint16), c_int)
 
         def callback_function(command, rlt, message, message_length):
