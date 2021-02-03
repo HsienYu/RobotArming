@@ -1,3 +1,4 @@
+# -*- coding: UTF-8 -*-
 from WordPath.WordPath import WordInformation, WriteWord, CleanWord, draw_circle
 import HRSS.HRSDK as SDK
 import cv2
@@ -332,8 +333,8 @@ def convert_images(dir_from, dir_to):
         if file_name.endswith('.jpg'):
             print(file_name)
             img = cv2.imread(os.path.join(dir_from, file_name))
-            img_contour = create_line_drawing_image(img)
-            img_invert = cv2.bitwise_not(img_contour)
+            #img_contour = create_line_drawing_image(img)
+            img_invert = cv2.bitwise_not(img)
             cv2.imwrite(os.path.join(dir_to, file_name), img_invert)
 
 
@@ -345,22 +346,22 @@ if __name__ == "__main__":
     # robot.ConnectionCommand.find_device()
 
     try:
-        # robot.ConnectionCommand.open_connection(ip='192.168.6.50')
-        robot.ConnectionCommand.open_connection(ip='127.0.0.1')
+        robot.ConnectionCommand.open_connection(ip='192.168.6.50')
+        #robot.ConnectionCommand.open_connection(ip='127.0.0.1')
         robot.ControlerCommand.set_operation_mode(SDK.OperationMode.auto_mode.value)  # 高速
         robot.ConnectionCommand.set_connection_level(1)
     except:
         print("手臂連線異常，請重新連線！")
 
-    write = WriteWord(robot_handle=robot, modify_z=0)  # 寫字
+    write = WriteWord(robot_handle=robot, modify_z=-122)  # 寫字
     clean = CleanWord(robot_handle=robot)  # 板擦
     draw_circle = draw_circle(robot_handle=robot)  # 畫圓
 
-    # 啟動回 home
+    #啟動回 home
     robot_home(robot)
     print("Robot connect successful..............")
     print("====================================================")
-    # # 清理
+    # 清理
     print("開始擦玻璃..............")
     clean_start_point(robot)
     clean.clean_start(10)
@@ -378,7 +379,7 @@ if __name__ == "__main__":
         # drawing from png
         print("start drawing..............")
         robot.CoordinateCommand.set_base_number(10)
-        robot.SystemCommand.set_override_ratio(65)
+        robot.SystemCommand.set_override_ratio(85)#
 
 
         zero_point = SDK.Joint(-0.000, 71.000, -39.500, 0.000, 30.000, 0.000)
@@ -388,24 +389,42 @@ if __name__ == "__main__":
             if(robot.MotionCommand.get_command_count() == 0):
                 break;
 
-        # 畫手臂前 思考 下不了手
-        think_robot(robot)
 
-        robot.SystemCommand.set_override_ratio(65)
+
+        
+
+        # 畫手臂前 思考 下不了手
+        #think_robot(robot)
+
+        robot.SystemCommand.set_override_ratio(80)#65
         height = 0
 
-        dir_src = 'images'
+        # dir_src = 'images'
         dir_dest = 'output'
-        convert_images(dir_src, dir_dest)
+        # convert_images(dir_src, dir_dest)
 
-        image = cv2.imread('output/output.jpg',cv2.IMREAD_GRAYSCALE)
+        # image = cv2.imread('output/out.png', cv2.IMREAD_UNCHANGED)
+
+        # make mask of where the transparent bits are
+        # trans_mask = image[:, :, 3] == 0
+
+        # replace areas of transparency with white and not transparent
+        # image[trans_mask] = [255, 255, 255, 255]
+
+        # new image without alpha channel...
+        # new_img = cv2.cvtColor(image, cv2.COLOR_BGRA2BGR)
+        # image = new_img
+
+        image = cv2.imread('output/test.png',cv2.IMREAD_GRAYSCALE)
+        # image = cv2.resize(image, (750, 1000))
+        # (thresh, blackAndWhiteImage) = cv2.threshold(image, 127, 255, cv2.THRESH_BINARY)
 
         # 影像等比縮放
         image = cv2.resize(image, (int(image.shape[1] * shape_1), int(image.shape[0] * shape_0)), interpolation=cv2.INTER_CUBIC)
         #save temp
-        cv2.imwrite(os.path.join(dir_dest, 'resize.jpg'), image)
-        #cv2.imshow('all', image)
-        #cv2.waitKey(1)
+        # cv2.imwrite(os.path.join(dir_dest, 'test.png'), new_img)
+        cv2.imshow('all', image)
+        cv2.waitKey(1)
 
         word.thinning(image,"detail")
         word.sort_contours(method="top-to-bottom")

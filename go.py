@@ -1,3 +1,5 @@
+# -*- coding: UTF-8 -*-
+
 from WordPath.WordPath import WordInformation, WriteWord, CleanWord, draw_circle
 import HRSS.HRSDK as SDK
 import cv2
@@ -306,8 +308,8 @@ if __name__ == "__main__":
     #robot.ConnectionCommand.find_device()
 
     try:
-        #robot.ConnectionCommand.open_connection(ip='192.168.6.50')
-        robot.ConnectionCommand.open_connection(ip='127.0.0.1')
+        robot.ConnectionCommand.open_connection(ip='192.168.6.50')
+        #robot.ConnectionCommand.open_connection(ip='127.0.0.1')
         robot.ControlerCommand.set_operation_mode(SDK.OperationMode.auto_mode.value)  # 高速
         robot.ConnectionCommand.set_connection_level(1)
     except:

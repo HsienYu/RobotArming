@@ -136,9 +136,9 @@ class WriteWord:
 class CleanWord:
     def __init__(self, robot_handle):
         self.robot_handle = robot_handle
-        self.base_x = -35
+        self.base_x = -30 #-35
         self.base_y = 0
-        self.base_z = -46
+        self.base_z = -160 #-46
         self.offset_x = 1300       # 往左位移距離
         self.offset_y = 80        # 往下位移距離
         self.offset_clean = 10    # 次數
